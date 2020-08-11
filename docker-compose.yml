@@ -1,0 +1,67 @@
+version: '3'
+services:
+
+  database:
+    image: mariadb
+    volumes:
+      - ./data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: volkszaehler
+      MYSQL_USER: vz
+      MYSQL_PASSWORD: demo
+      MYSQL_ROOT_PASSWORD: admin_demo
+    networks:
+    - volkszaehler
+
+  volkszaehler:
+    image: volkszaehler/volkszaehler
+    ports:
+    - 8082:8080
+    # NOTE: The init command will only work once the database is fully up and running.
+    #       By putting restart: always docker-compose will retry starting this container
+    #       and finally complete the database setup sequence.
+    command: sh -c "
+      sed -i s/localhost/database/ /vz/etc/config.yaml &&
+      sed -i s/vz_admin/root/ /vz/etc/config.yaml &&
+      echo "sed" &&
+      sleep 1 &&
+      (/vz/bin/doctrine orm:schema-tool:update --force || /vz/bin/doctrine orm:schema-tool:create) &&
+      echo "doctrine" &&
+      /vz/vendor/bin/ppm start -c /vz/etc/middleware.json --static-directory /vz/htdocs --cgi-path=/usr/local/bin/php --workers=1"
+    depends_on:
+    - database
+    networks:
+    - volkszaehler
+    restart: always
+
+  ingress:
+    image: ingress
+    build: 
+      context: https://github.com/andig/ingress.git
+    depends_on:
+      - mosquitto
+    volumes:
+      - ./ingress.yml:/etc/ingress.yml
+    networks:
+      - volkszaehler
+
+  mdmb:
+    image: volkszaehler/mbmd
+    depends_on:
+      - mosquitto
+    volumes:
+      - ./mbmd.yaml:/etc/mbmd.yaml
+    command: run
+    ports:
+      - 8081:8080
+    networks:
+      - volkszaehler
+
+  mosquitto:
+    image: eclipse-mosquitto
+    networks:
+      - volkszaehler
+
+
+networks:
+  volkszaehler:

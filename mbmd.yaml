@@ -1,0 +1,15 @@
+#-a pv.fritz.box:502 -d SUNS:1 --mqtt-broker tcp://127.0.0.1:1883  --mqtt-topic=""
+
+mqtt:
+  broker: tcp://mosquitto:1883
+  topic: ""
+
+adapters:
+- device: pv.fritz.box:502
+
+# list of devices
+devices:
+- name: pv
+  type: sunspec
+  id: 1
+  adapter: pv.fritz.box:502
