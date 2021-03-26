@@ -31,6 +31,18 @@ services:
       - volkszaehler
     restart: always
 
+  vzlogger:
+    build:
+     context: .
+     dockerfile: Dockerfile.vzlogger
+    volumes:
+      - ./vzlogger.conf:/etc/vzlogger.conf
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+    networks:
+     - volkszaehler
+    restart: always
+
 
 networks:
   volkszaehler:
