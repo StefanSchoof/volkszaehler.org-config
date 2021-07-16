@@ -2,20 +2,18 @@ version: '3'
 services:
 
   volkszaehler:
-    build:
-      context: .
-#    image: stefanschoof/volkszaehler
+    image: stefanschoof/volkszaehler
     volumes:
       - ./volkszaehler.yaml:/vz/etc/config.yaml
     ports:
-      - 80:8080
+      - 8080:8080
     # NOTE: The init command will only work once the database is fully up and running.
     #       By putting restart: always docker-compose will retry starting this container
     #       and finally complete the database setup sequence.
     command: >
       sh -c "
       (/vz/bin/doctrine orm:schema-tool:update --force || /vz/bin/doctrine orm:schema-tool:create) &&
-      /vz/vendor/bin/ppm start -c /vz/etc/middleware.json --static-directory /vz/htdocs --cgi-path=/usr/local/bin/php --workers=2"
+      /vz/vendor/bin/ppm start -c /vz/etc/middleware.json --static-directory /vz/htdocs --cgi-path=/usr/local/bin/php"
     networks:
       - volkszaehler
     restart: always
@@ -25,8 +23,6 @@ services:
     volumes:
       - ./mbmd.yaml:/etc/mbmd.yaml
     command: run
-    ports:
-      - 8080:8080
     networks:
       - volkszaehler
     restart: always
