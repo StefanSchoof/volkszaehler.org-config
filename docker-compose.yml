@@ -16,7 +16,12 @@ services:
       /vz/vendor/bin/ppm start -c /vz/etc/middleware.json --static-directory /vz/htdocs --cgi-path=/usr/local/bin/php"
     networks:
       - volkszaehler
+      - traefik
     restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.volkszaehler.loadbalancer.server.port=8080"
+      - "traefik.docker.network=traefik"
 
   mbmd:
     image: volkszaehler/mbmd
@@ -42,3 +47,5 @@ services:
 
 networks:
   volkszaehler:
+  traefik:
+    external: true
