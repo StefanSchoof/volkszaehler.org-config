@@ -11,9 +11,10 @@ services:
     #       By putting restart: always docker-compose will retry starting this container
     #       and finally complete the database setup sequence.
     command: >
-      sh -c "
-      (/vz/bin/doctrine orm:schema-tool:update --force || /vz/bin/doctrine orm:schema-tool:create) &&
-      /vz/vendor/bin/ppm start -c /vz/etc/middleware.json --static-directory /vz/htdocs --cgi-path=/usr/local/bin/php"
+      sh -c "(/vz/bin/doctrine orm:schema-tool:update --force ||
+      /vz/bin/doctrine orm:schema-tool:create) && /vz/vendor/bin/ppm start -c
+      /vz/etc/middleware.json --static-directory /vz/htdocs
+      --cgi-path=/usr/local/bin/php --workers=1"
     networks:
       - volkszaehler
       - traefik
@@ -34,18 +35,17 @@ services:
 
   vzlogger:
     build:
-     context: .
-     dockerfile: Dockerfile.vzlogger
+      context: .
+      dockerfile: Dockerfile.vzlogger
     volumes:
       - ./vzlogger.conf:/etc/vzlogger.conf
     devices:
       - /dev/ttyUSB0:/dev/ttyUSB0
     networks:
-     - volkszaehler
+      - volkszaehler
     restart: always
 
-
 networks:
-  volkszaehler:
+  volkszaehler: null
   traefik:
     external: true
