@@ -1,6 +1,6 @@
 php:
   timezone: Europe/Berlin
-  locale: ['de_DE', 'en_US', 'C']
+  locale: ["de_DE", "en_US", "C"]
 
 db:
   driver: mysqli
@@ -10,6 +10,17 @@ db:
   charset: utf8
   dbname: volkszaehler
   ssl_capath: /etc/ssl/certs/
+
+push:
+  server: 5582
+  broadcast: 8082
+  # routes for wamp access
+  wamp:
+    - /
+    - /ws
+  # routes for plain web socket access
+  websocket:
+    - /socket
 
 network:
   postlimit: false

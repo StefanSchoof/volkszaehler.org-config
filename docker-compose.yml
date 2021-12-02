@@ -5,6 +5,7 @@ services:
     image: stefanschoof/volkszaehler
     volumes:
       - ./volkszaehler.yaml:/vz/etc/config.yaml
+      - ./options.js:/vz/htdocs/js/options.js
     ports:
       - 8080:8080
     # NOTE: The init command will only work once the database is fully up and running.
@@ -23,6 +24,24 @@ services:
       - "traefik.enable=true"
       - "traefik.http.services.volkszaehler.loadbalancer.server.port=8080"
       - "traefik.docker.network=traefik"
+
+  push-server:
+    image: stefanschoof/volkszaehler
+    volumes:
+      - ./volkszaehler.yaml:/vz/etc/config.yaml
+    ports:
+      - 5582:5582
+      - 8082:8082
+    command: /vz/bin/push-server
+    networks:
+      - volkszaehler
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.volkszaehler-push.loadbalancer.server.port=8082"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.volkszaehler-push.rule=Host(`${HOST}`) &&
+        PathPrefix(`/ws`)"
 
   mbmd:
     image: volkszaehler/mbmd

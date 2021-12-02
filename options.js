@@ -39,16 +39,17 @@ vz.options = {
     middleware: [
         {
             title: 'Local (default)',
-            url: 'api'
+            url: ''
             // live: 8082					// NOTE: live updates require
             //    - push-server running and
             //    - either apache proxy forwarding configured according to
             //			https://github.com/volkszaehler/volkszaehler.org/issues/382
             // 		- or push-server live update port configured and accessible
-        }, {
-            title: 'Volkszaehler Demo',
-            url: 'https://demo.volkszaehler.org/middleware.php'
         }
+        // , {
+        //     title: 'Volkszaehler Demo',
+        //     url: 'https://demo.volkszaehler.org/middleware.php'
+        // }
     ],
     monthNames: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
     dayNames: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
