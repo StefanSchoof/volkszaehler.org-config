@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"time"
+	"os"
 )
 
 type Response struct {
@@ -36,11 +36,11 @@ func main() {
 	response, err := http.Get("http://pv.fritz.box/solar_api/v1/GetPowerFlowRealtimeData.fcgi")
 
 	if err != nil {
-		log.Fatal(err)
+		os.Exit(1)
 	}
 	responseData, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Fatal(err)
+		os.Exit(1)
 	}
 	var result Response
 	json.Unmarshal(responseData, &result)
