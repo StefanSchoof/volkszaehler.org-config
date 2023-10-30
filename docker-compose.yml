@@ -42,15 +42,6 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
 
-pvcache:
-    image: node:lts-alpine
-    volumes:
-      - ./pvcache.mjs:/pvcache.mjs
-    command: ["node", "pvcache.mjs"]
-    ports:
-      - 8000:8000
-    restart: always
-
 networks:
   volkszaehler: null
   traefik:
