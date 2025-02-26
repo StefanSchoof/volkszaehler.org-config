@@ -1,11 +1,10 @@
-version: '3'
 services:
 
   volkszaehler:
-    # image: volkszaehler/volkszaehler
-    image: stefanschoof/volkszaehler
+    image: volkszaehler/volkszaehler
     volumes:
       - ./volkszaehler.yaml:/vz/etc/config.yaml
+      - ./options.js:/vz/htdocs/js/options.js
     ports:
       - 8080:8080
     # NOTE: The init command will only work once the database is fully up and running.
@@ -23,7 +22,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.volkszaehler.loadbalancer.server.port=8080"
+      - "traefik.http.middlewares.volkszaehler.compress=true"
       - "traefik.docker.network=traefik"
+      - "traefik.http.routers.volkszaehler.middlewares=auth"
       - "com.centurylinklabs.watchtower.monitor-only=true"
 
   vzlogger:
